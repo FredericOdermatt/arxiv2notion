@@ -49,10 +49,12 @@ export default class Notion {
     const data = await _data;
     const databaseId = document.getElementById("js-select-database").value;
     const title = data.title;
-    const abst = data.abst;
     const paperUrl = data.url;
-    const authorsFormatted = data.authors.join(",");
-
+    // const authorsFormatted = data.authors.join(",");
+    const authorsFormatted = data.authors;
+    var authors = [];
+    for (var i = 0; i < authorsFormatted.length; ++i)
+      authors[i] = { name: authorsFormatted[i]};
     try {
       const url = this.apiBase + "pages";
       const parent = {
@@ -65,55 +67,15 @@ export default class Notion {
           type: "title",
           title: [{ text: { content: title } }],
         },
-        Publisher: {
-          id: "conference",
-          type: "select",
-          select: { name: "arXiv" },
-        },
         URL: {
           id: "url",
           type: "url",
           url: paperUrl,
         },
-        Abstract: {
-          id: "abstract",
-          type: "rich_text",
-          rich_text: [
-            {
-              type: "text",
-              text: { content: abst, link: null },
-              annotations: {
-                bold: false,
-                italic: true,
-                strikethrough: false,
-                underline: false,
-                code: false,
-                color: "default",
-              },
-              plain_text: abst,
-              href: null,
-            },
-          ],
-        },
         Authors: {
           id: "authors",
-          type: "rich_text",
-          rich_text: [
-            {
-              type: "text",
-              text: { content: authorsFormatted, link: null },
-              annotations: {
-                bold: false,
-                italic: false,
-                strikethrough: false,
-                underline: false,
-                code: false,
-                color: "default",
-              },
-              plain_text: authorsFormatted,
-              href: null,
-            },
-          ],
+          type: "multi_select",
+          multi_select: authors,
         },
       };
 
